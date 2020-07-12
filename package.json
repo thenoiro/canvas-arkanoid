@@ -1,7 +1,7 @@
 {
-  "name": "starter-sketch",
+  "name": "canvas-learning",
   "version": "1.0.0",
-  "description": "Empty simple convenient environment for writing something in javascript",
+  "description": "Canvas sandbox",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenoiro/starter-sketch.git"
+    "url": "git+https://github.com/thenoiro/learning-canvas.git"
   },
   "author": "Bohdan Chernovol",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thenoiro/starter-sketch/issues"
+    "url": "https://github.com/thenoiro/learning-canvas/issues"
   },
-  "homepage": "https://github.com/thenoiro/starter-sketch#readme",
+  "homepage": "https://github.com/thenoiro/learning-canvas#readme",
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.3",
