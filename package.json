@@ -1,7 +1,7 @@
 {
-  "name": "canvas-learning",
+  "name": "canvas-arkanoid",
   "version": "1.0.0",
-  "description": "Canvas sandbox",
+  "description": "Canvas Arkanoid",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenoiro/learning-canvas.git"
+    "url": "git+https://github.com/thenoiro/canvas-arkanoid.git"
   },
   "author": "Bohdan Chernovol",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thenoiro/learning-canvas/issues"
+    "url": "https://github.com/thenoiro/canvas-arkanoid/issues"
   },
-  "homepage": "https://github.com/thenoiro/learning-canvas#readme",
+  "homepage": "https://github.com/thenoiro/canvas-arkanoid#readme",
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.3",

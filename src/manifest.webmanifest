@@ -1,6 +1,6 @@
 {
-  "name": "Line theory",
-  "short_name": "Line",
+  "name": "Canvas Arkanoid",
+  "short_name": "arkanoid",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
