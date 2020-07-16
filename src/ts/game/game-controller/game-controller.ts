@@ -1,6 +1,7 @@
 import { config } from '../../config';
 import { Paddle, PaddleInterface } from './paddle/paddle';
 import { GameLoop, GameLoopInterface } from './game-loop';
+import { Ball, BallInterface } from './ball/ball';
 
 interface GameControllerInterface {
   init: () => void;
@@ -23,6 +24,8 @@ export default class GameController implements GameControllerInterface {
 
   private paddle: PaddleInterface;
 
+  private ball: BallInterface;
+
   private loop: GameLoopInterface = GameLoop(() => this.update());
 
   constructor(options: GameControllerOptions) {
@@ -43,11 +46,13 @@ export default class GameController implements GameControllerInterface {
     this.width = width;
     this.height = height;
     this.paddle = new Paddle({ canvas });
+    this.ball = new Ball({ canvas });
   }
 
   public init(): void {
     this.render();
     this.paddle.init();
+    this.ball.init();
   }
 
   public start(): void {
