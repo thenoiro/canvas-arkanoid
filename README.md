@@ -1,1 +1,3 @@
-Canvas Sandbox
+## Arkanoid game.
+
+For learning purposes.

@@ -1,29 +1,49 @@
+/**
+ * To enable .ts files checking in the Virtual Studio Code go to the IDE settings.json,
+ * find "eslint.validate" (or create, if there no such property), then add "typescript"
+ * value to the proeprty array.
+ */
 module.exports = {
   env: {
-    browser: false,
-    commonjs: true,
     es6: true,
-    node: true,
   },
   extends: [
-    'airbnb-base',
+    // https://www.npmjs.com/package/eslint-config-airbnb-typescript
+    'airbnb-typescript/base',
+    'plugin:@typescript-eslint/eslint-recommended',
   ],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2018,
+    sourceType: 'module',
   },
-  rules: {
-  },
-  overrides: [
-    {
-      files: ['src/**/*.js', 'dist/**/*.js'],
-      env: {
-        browser: true,
-        commonjs: false,
-      },
-    },
+  plugins: [
+    '@typescript-eslint',
   ],
+  rules: {},
+  overrides: [{
+    files: ['**/*.js'],
+    env: {
+      node: true,
+      es6: true,
+      browser: true,
+    },
+    extends: [
+      // https://www.npmjs.com/package/eslint-config-airbnb-base
+      'airbnb-base',
+    ],
+    rules: {
+      'max-len': ['error', 100, 2, {
+        ignoreUrls: true,
+        ignoreComments: false,
+        ignoreRegExpLiterals: true,
+        ignoreStrings: false,
+        ignoreTemplateLiterals: true,
+      }],
+    },
+  }],
 };
