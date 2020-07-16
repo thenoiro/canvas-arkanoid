@@ -80,9 +80,11 @@ export class Paddle implements PaddleInterface {
 
     if (x < 0) {
       x = 0;
+      this.movement.stop();
     }
     if (x + pos.width > width) {
       x = width - pos.width;
+      this.movement.stop();
     }
     this.position.moveX(x - pos.x1);
     this.render();

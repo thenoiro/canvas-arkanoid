@@ -12,6 +12,7 @@ interface MovementOptions {
 
 export interface PaddleMovementInterface {
   calculateMove: (options: MovementOptions) => Movement;
+  stop: () => void;
 }
 
 export class PaddleMovement implements PaddleMovementInterface {
@@ -59,5 +60,9 @@ export class PaddleMovement implements PaddleMovementInterface {
       }
     }
     return this.s;
+  }
+
+  public stop(): void {
+    this.s = 0;
   }
 }
