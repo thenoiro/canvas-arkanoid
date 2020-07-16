@@ -3,13 +3,6 @@ export interface CanvasConfig {
   readonly height: number;
 }
 
-export interface PaddleMarginConfig {
-  readonly bottom?: number;
-  readonly top?: number;
-  readonly left?: number;
-  readonly right?: number;
-}
-
 export interface PaddleConfig {
   readonly width: number;
   readonly height: number;
@@ -41,10 +34,7 @@ export const config: Config = {
     paddle: {
       width: 150,
       height: 20,
-      color: 'black',
-      margin: {
-        bottom: 10,
-      },
+      color: '#306',
     },
   },
 };

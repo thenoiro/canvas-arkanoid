@@ -1,5 +1,5 @@
 import { config } from '../../../config';
-import { PaddlePosition, PaddlePositionInterface } from './paddle-position';
+import { PaddlePosition, PaddlePositionInterface, PaddlePositionDetails } from './paddle-position';
 import { GameLoop, DeltaTime } from '../game-loop';
 import { InputController, InputControllerInterface, InputState } from '../input-controller';
 import {
@@ -22,7 +22,12 @@ export class Paddle implements PaddleInterface {
 
   private color: string;
 
-  private position: PaddlePositionInterface;
+  private position: PaddlePositionInterface = new PaddlePosition({
+    x: config.game.canvas.width / 2,
+    y: config.game.canvas.height - 30,
+    width: config.game.paddle.width,
+    height: config.game.paddle.height,
+  });
 
   private input: InputControllerInterface;
 
@@ -31,24 +36,13 @@ export class Paddle implements PaddleInterface {
   constructor(options: PaddleOptions) {
     const { canvas } = options;
     const context = canvas.getContext('2d');
-    const { paddle: paddleConfig, canvas: canvasConfig } = config.game;
+    const { paddle: paddleConfig } = config.game;
 
     if (!(context instanceof CanvasRenderingContext2D)) {
       throw new Error("Paddle: Can't get canvas context.");
     }
     this.ctx = context;
     this.color = paddleConfig.color;
-    this.position = new PaddlePosition({
-      container: {
-        width: canvasConfig.width,
-        height: canvasConfig.height,
-      },
-      paddle: {
-        width: paddleConfig.width,
-        height: paddleConfig.height,
-        margin: paddleConfig.margin,
-      },
-    });
     this.input = new InputController({ element: canvas });
     GameLoop((dt: DeltaTime) => this.update(dt));
   }
@@ -58,9 +52,10 @@ export class Paddle implements PaddleInterface {
   }
 
   private render(): void {
-    const { ctx, position: pos, color } = this;
+    const { ctx, color } = this;
+    const pos: PaddlePositionDetails = this.position.getCurrentPosition();
     ctx.fillStyle = color;
-    ctx.fillRect(pos.x, pos.y, pos.width, pos.height);
+    ctx.fillRect(pos.x1, pos.y1, pos.width, pos.height);
   }
 
   private update(dt: DeltaTime): void {
@@ -69,7 +64,7 @@ export class Paddle implements PaddleInterface {
 
   private move(delta: DeltaTime): void {
     const { width } = config.game.canvas;
-    const pos = this.position;
+    const pos: PaddlePositionDetails = this.position.getCurrentPosition();
     const inputState: InputState = this.input.getState();
     const { left, right } = inputState;
     let direction: Direction = 0;
@@ -81,7 +76,7 @@ export class Paddle implements PaddleInterface {
       direction = 1;
     }
     const offset: Movement = this.movement.calculateMove({ direction, delta });
-    let x = pos.x + offset;
+    let x = pos.x1 + offset;
 
     if (x < 0) {
       x = 0;
@@ -89,7 +84,7 @@ export class Paddle implements PaddleInterface {
     if (x + pos.width > width) {
       x = width - pos.width;
     }
-    pos.x = x;
+    this.position.moveX(x - pos.x1);
     this.render();
   }
 }

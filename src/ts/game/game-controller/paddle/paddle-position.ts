@@ -1,71 +1,73 @@
+export interface PaddlePositionDetails {
+  x: number;
+  y: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  width: number;
+  height: number;
+}
+
 export interface PaddlePositionInterface {
+  moveX: (x: number) => void;
+  getCurrentPosition: () => PaddlePositionDetails;
+}
+
+interface PaddlePositionOptions {
   x: number;
   y: number;
   width: number;
   height: number;
-  halfWidth: number;
-  halfHeight: number;
-}
-
-export interface PaddlePositionMargin {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
-
-export interface PaddlePositionOptionsMargin {
-  readonly top?: number;
-  readonly bottom?: number;
-  readonly left?: number;
-  readonly right?: number;
-}
-
-export interface PaddleSize {
-  readonly width: number;
-  readonly height: number;
-  readonly margin: PaddlePositionOptionsMargin;
-}
-
-export interface ContainerSize {
-  readonly width: number;
-  readonly height: number;
-}
-
-export interface PaddlePositionOptions {
-  readonly paddle: PaddleSize;
-  readonly container: ContainerSize;
 }
 
 export class PaddlePosition implements PaddlePositionInterface {
-  public width: number;
+  private x: number;
 
-  public height: number;
+  private y: number;
 
-  public halfWidth: number;
+  private x1: number;
 
-  public halfHeight: number;
+  private y1: number;
 
-  public x: number;
+  private x2: number;
 
-  public y: number;
+  private y2: number;
 
-  public margin: PaddlePositionMargin;
+  private width: number;
+
+  private height: number;
 
   constructor(options: PaddlePositionOptions) {
-    const { paddle, container } = options;
+    const halfWidth = options.width / 2;
+    const halfHeight = options.height / 2;
 
-    this.width = paddle.width;
-    this.height = paddle.height;
-    this.halfWidth = paddle.width / 2;
-    this.halfHeight = paddle.height / 2;
-    this.margin = {
-      top: paddle.margin.top || 0,
-      bottom: paddle.margin.bottom || 0,
-      left: paddle.margin.left || 0,
-      right: paddle.margin.right || 0,
+    this.x = options.x;
+    this.y = options.y;
+    this.width = options.width;
+    this.height = options.height;
+    this.x1 = options.x - halfWidth;
+    this.x2 = options.x + halfWidth;
+    this.y1 = options.y - halfHeight;
+    this.y2 = options.y + halfHeight;
+  }
+
+  public getCurrentPosition(): PaddlePositionDetails {
+    return {
+      x: this.x,
+      y: this.y,
+      x1: this.x1,
+      y1: this.y1,
+      x2: this.x2,
+      y2: this.y2,
+      width: this.width,
+      height: this.height,
     };
-    this.x = (container.width / 2) - this.halfWidth + this.margin.left - this.margin.right;
-    this.y = container.height - this.height + this.margin.top - this.margin.bottom;
+  }
+
+  public moveX(x: number): void {
+    this.x += x;
+    this.x1 += x;
+    this.x2 += x;
   }
 }
