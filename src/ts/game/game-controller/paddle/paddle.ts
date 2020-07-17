@@ -1,5 +1,6 @@
 import { config } from '../../../config';
-import { PaddlePosition, PaddlePositionInterface, PaddlePositionDetails } from './paddle-position';
+import { PaddlePosition, PaddlePositionDetails } from './paddle-position';
+import { GameObject, GameObjectInterface } from '../game-object';
 import { GameLoop, DeltaTime } from '../game-loop';
 import { InputController, InputControllerInterface, InputState } from '../input-controller';
 import {
@@ -9,16 +10,15 @@ import {
   Movement,
 } from './paddle-movement';
 
-export interface PaddleInterface {
+export interface PaddleInterface extends GameObjectInterface {
   init: () => void;
-  getPosition: () => PaddlePositionDetails;
 }
 
 export interface PaddleOptions {
   canvas: HTMLCanvasElement;
 }
 
-export class Paddle implements PaddleInterface {
+export class Paddle extends GameObject implements PaddleInterface {
   private ctx: CanvasRenderingContext2D;
 
   private color: string;
@@ -27,14 +27,15 @@ export class Paddle implements PaddleInterface {
 
   private movement: PaddleMovementInterface = new PaddleMovement();
 
-  private position: PaddlePositionInterface = new PaddlePosition({
-    x: config.game.canvas.width / 2,
-    y: config.game.canvas.height - 30,
-    width: config.game.paddle.width,
-    height: config.game.paddle.height,
-  });
-
   constructor(options: PaddleOptions) {
+    super({
+      position: new PaddlePosition({
+        x: config.game.canvas.width / 2,
+        y: config.game.canvas.height - 30,
+        width: config.game.paddle.width,
+        height: config.game.paddle.height,
+      }),
+    });
     const { canvas } = options;
     const context = canvas.getContext('2d');
     const { paddle: paddleConfig } = config.game;
@@ -89,9 +90,5 @@ export class Paddle implements PaddleInterface {
     }
     this.position.moveX(x - pos.x1);
     this.render();
-  }
-
-  public getPosition(): PaddlePositionDetails {
-    return this.position.getCurrentPosition();
   }
 }

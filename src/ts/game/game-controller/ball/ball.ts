@@ -1,9 +1,11 @@
 import { config } from '../../../config';
-import { BallPosition, BallPositionInterface, BallPositionDetails } from './ball-position';
+import { BallPosition, BallPositionDetails } from './ball-position';
 import { GameLoop, DeltaTime } from '../game-loop';
 import { BallMovementInterface, BallMovement, MovementDetails } from './ball-movement';
+import { GameObject, GameObjectInterface } from '../game-object';
+import { GameObjectPositionDetails } from '../game-object-position';
 
-export interface BallInterface {
+export interface BallInterface extends GameObjectInterface {
   init: () => void;
   getPosition: () => BallPositionDetails;
   reverseX: () => void;
@@ -14,20 +16,21 @@ interface BallOptions {
   canvas: HTMLCanvasElement;
 }
 
-export class Ball implements BallInterface {
+export class Ball extends GameObject implements BallInterface {
   private ctx: CanvasRenderingContext2D;
 
   private color: string = config.game.ball.color;
 
-  private position: BallPositionInterface = new BallPosition({
-    size: config.game.ball.size,
-    x: config.game.canvas.width / 2,
-    y: 50,
-  });
-
   private movement: BallMovementInterface = new BallMovement();
 
   constructor(options: BallOptions) {
+    super({
+      position: new BallPosition({
+        size: config.game.ball.size,
+        x: config.game.canvas.width / 2,
+        y: 50,
+      }),
+    });
     const context = options.canvas.getContext('2d');
 
     if (!(context instanceof CanvasRenderingContext2D)) {
@@ -63,7 +66,12 @@ export class Ball implements BallInterface {
   }
 
   public getPosition(): BallPositionDetails {
-    return this.position.getCurrentPosition();
+    const pos: GameObjectPositionDetails = super.getPosition();
+    const res: BallPositionDetails = {
+      size: pos.width,
+      ...pos,
+    };
+    return res;
   }
 
   public reverseX(): void {
