@@ -11,6 +11,7 @@ import {
 
 export interface PaddleInterface {
   init: () => void;
+  getPosition: () => PaddlePositionDetails;
 }
 
 export interface PaddleOptions {
@@ -22,16 +23,16 @@ export class Paddle implements PaddleInterface {
 
   private color: string;
 
+  private input: InputControllerInterface;
+
+  private movement: PaddleMovementInterface = new PaddleMovement();
+
   private position: PaddlePositionInterface = new PaddlePosition({
     x: config.game.canvas.width / 2,
     y: config.game.canvas.height - 30,
     width: config.game.paddle.width,
     height: config.game.paddle.height,
   });
-
-  private input: InputControllerInterface;
-
-  private movement: PaddleMovementInterface = new PaddleMovement();
 
   constructor(options: PaddleOptions) {
     const { canvas } = options;
@@ -53,7 +54,7 @@ export class Paddle implements PaddleInterface {
 
   private render(): void {
     const { ctx, color } = this;
-    const pos: PaddlePositionDetails = this.position.getCurrentPosition();
+    const pos: PaddlePositionDetails = this.getPosition();
     ctx.fillStyle = color;
     ctx.fillRect(pos.x1, pos.y1, pos.width, pos.height);
   }
@@ -64,7 +65,7 @@ export class Paddle implements PaddleInterface {
 
   private move(delta: DeltaTime): void {
     const { width } = config.game.canvas;
-    const pos: PaddlePositionDetails = this.position.getCurrentPosition();
+    const pos: PaddlePositionDetails = this.getPosition();
     const inputState: InputState = this.input.getState();
     const { left, right } = inputState;
     let direction: Direction = 0;
@@ -88,5 +89,9 @@ export class Paddle implements PaddleInterface {
     }
     this.position.moveX(x - pos.x1);
     this.render();
+  }
+
+  public getPosition(): PaddlePositionDetails {
+    return this.position.getCurrentPosition();
   }
 }
