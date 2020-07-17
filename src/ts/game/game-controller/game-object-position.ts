@@ -1,3 +1,5 @@
+import { Direction } from './paddle/paddle-movement';
+
 export interface Coord {
   x: number;
   y: number;
@@ -21,6 +23,8 @@ export interface GameObjectPositionDetails {
   readonly bottom: Coord;
   readonly left: Coord;
   readonly right: Coord;
+  readonly dx: Direction;
+  readonly dy: Direction;
 }
 
 export interface GameObjectPositionInterface {
@@ -34,6 +38,8 @@ export interface GameObjectPositionOptions {
   y: number;
   width: number;
   height: number;
+  dx?: Direction;
+  dy?: Direction;
 }
 
 export class GameObjectPosition implements GameObjectPositionInterface {
@@ -53,6 +59,10 @@ export class GameObjectPosition implements GameObjectPositionInterface {
 
   protected height: number;
 
+  protected dx: Direction = 0;
+
+  protected dy: Direction = 0;
+
   constructor(options: GameObjectPositionOptions) {
     const halfWidth = options.width / 2;
     const halfHeight = options.height / 2;
@@ -65,6 +75,13 @@ export class GameObjectPosition implements GameObjectPositionInterface {
     this.x2 = options.x + halfWidth;
     this.y1 = options.y - halfHeight;
     this.y2 = options.y + halfHeight;
+
+    if (options.dx) {
+      this.dx = options.dx;
+    }
+    if (options.dy) {
+      this.dy = options.dy;
+    }
   }
 
   public getPosition(): GameObjectPositionDetails {
@@ -113,18 +130,38 @@ export class GameObjectPosition implements GameObjectPositionInterface {
         x: this.x2,
         y: this.y,
       },
+      dx: this.dx,
+      dy: this.dy,
     };
   }
 
   public moveX(x: number): void {
-    this.x += x;
+    const newX: number = this.x + x;
+    let newDx: Direction = 0;
+
+    if (newX > this.x) {
+      newDx = 1;
+    } else if (newX < this.x) {
+      newDx = -1;
+    }
+    this.x = newX;
     this.x1 += x;
     this.x2 += x;
+    this.dx = newDx;
   }
 
   public moveY(y: number): void {
-    this.y += y;
+    const newY: number = this.y + y;
+    let newDy: Direction = 0;
+
+    if (newY > this.y) {
+      newDy = 1;
+    } else if (newY < this.y) {
+      newDy = -1;
+    }
+    this.y = newY;
     this.y1 += y;
     this.y2 += y;
+    this.dy = newDy;
   }
 }

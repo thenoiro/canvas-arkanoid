@@ -33,10 +33,8 @@ const isInside = (c: Coord, t: GameObjectPositionDetails): boolean => (
 );
 const calculateImpact = (a: number, a1: number, a2: number): number => {
   const width = a2 - a1;
-  const halfWidth = width / 2;
   const pos = a - a1;
-  const v = halfWidth / pos;
-  return 1 - v;
+  return pos / width;
 };
 const calculateTouch = (
   o: GameObjectPositionDetails,

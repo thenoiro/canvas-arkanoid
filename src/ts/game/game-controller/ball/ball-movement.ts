@@ -1,8 +1,11 @@
 import { config } from '../../../config';
 import { DeltaTime } from '../game-loop';
+import { Direction } from '../paddle/paddle-movement';
 
 export interface BallMovementInterface {
   calculateMove: (options: MovementOptions) => MovementDetails;
+  reverseX: () => void;
+  reverseY: () => void;
   correctX: (c: number) => void;
   correctY: (c: number) => void;
 }
@@ -36,11 +39,29 @@ export class BallMovement implements BallMovementInterface {
     };
   }
 
+  public reverseX(): void {
+    this.rx *= -1;
+  }
+
+  public reverseY(): void {
+    this.ry *= -1;
+  }
+
   public correctX(c: number): void {
-    this.rx *= c;
+    const xDir: Direction = this.rx < 0 ? -1 : 1;
+    const yDir: Direction = this.ry < 0 ? -1 : 1;
+    const rx = (Math.abs(this.rx) + c) / 2;
+    const ry = 1 - rx;
+    this.rx = xDir === -1 ? 0 - rx : rx;
+    this.ry = yDir === -1 ? 0 - ry : ry;
   }
 
   public correctY(c: number): void {
-    this.ry *= c;
+    const xDir: Direction = this.rx < 0 ? -1 : 1;
+    const yDir: Direction = this.ry < 0 ? -1 : 1;
+    const ry = (Math.abs(this.ry) + c) / 2;
+    const rx = 1 - ry;
+    this.rx = xDir === -1 ? 0 - rx : rx;
+    this.ry = yDir === -1 ? 0 - ry : ry;
   }
 }

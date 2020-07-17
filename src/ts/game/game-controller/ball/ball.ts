@@ -10,6 +10,8 @@ export interface BallInterface extends GameObjectInterface {
   getPosition: () => BallPositionDetails;
   reverseX: () => void;
   reverseY: () => void;
+  correctX: (c: number) => void;
+  correctY: (c: number) => void;
 }
 
 interface BallOptions {
@@ -46,7 +48,6 @@ export class Ball extends GameObject implements BallInterface {
 
   private render(): void {
     const pos: BallPositionDetails = this.getPosition();
-
     this.ctx.fillStyle = this.color;
     this.ctx.beginPath();
     this.ctx.arc(pos.x, pos.y, pos.size, 0, Math.PI * 2);
@@ -75,10 +76,18 @@ export class Ball extends GameObject implements BallInterface {
   }
 
   public reverseX(): void {
-    this.movement.correctX(-1);
+    this.movement.reverseX();
   }
 
   public reverseY(): void {
-    this.movement.correctY(-1);
+    this.movement.reverseY();
+  }
+
+  public correctX(c: number): void {
+    this.movement.correctX(c);
+  }
+
+  public correctY(c: number): void {
+    this.movement.correctY(c);
   }
 }

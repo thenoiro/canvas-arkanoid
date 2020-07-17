@@ -44,7 +44,7 @@ export const config: Config = {
     },
     ball: {
       size: 5,
-      speed: 200,
+      speed: 300,
       color: 'red',
     },
   },

@@ -26,22 +26,23 @@ export default (options: GameOptions): void => {
   const buttonStart = container.querySelector('.game-start');
   const buttonStop = container.querySelector('.game-stop');
   const buttonRestart = container.querySelector('.game-restart');
-  let gameController = new GameController({ container });
 
   if (isElement(buttonStart) && isElement(buttonStop) && isElement(buttonRestart)) {
-    buttonStart.addEventListener('click', (): void => {
+    let gameController = new GameController({ container });
+
+    const start = () => {
       logger.debug('Game started');
       gameController.start();
       buttonStart.setAttribute('disabled', 'disabled');
       buttonStop.removeAttribute('disabled');
-    });
-    buttonStop.addEventListener('click', (): void => {
+    };
+    const stop = () => {
       logger.debug('Game stopped');
       gameController.stop();
       buttonStart.removeAttribute('disabled');
       buttonStop.setAttribute('disabled', 'disabled');
-    });
-    buttonRestart.addEventListener('click', (): void => {
+    };
+    const restart = () => {
       logger.debug('Game restarted');
       gameController.destroy();
       const currentCanvas = container.querySelector('.game-canvas');
@@ -55,8 +56,12 @@ export default (options: GameOptions): void => {
         buttonStart.removeAttribute('disabled');
         buttonStop.setAttribute('disabled', 'disabled');
       }
-    });
+    };
+    buttonStart.addEventListener('click', (): void => start());
+    buttonStop.addEventListener('click', (): void => stop());
+    buttonRestart.addEventListener('click', (): void => restart());
+
+    gameController.init();
+    logger.debug('Game created', gameController);
   }
-  gameController.init();
-  logger.debug('Game created', gameController);
 };

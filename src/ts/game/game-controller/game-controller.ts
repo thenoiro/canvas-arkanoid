@@ -10,7 +10,6 @@ interface GameControllerInterface {
   start: () => void;
   stop: () => void;
 }
-
 interface GameControllerOptions {
   container: HTMLElement;
 }
@@ -85,12 +84,36 @@ export default class GameController implements GameControllerInterface {
     const touchCanvasX: boolean = ballPosition.x2 > this.width || ballPosition.x1 < 0;
     const touchCanvasY: boolean = ballPosition.y1 < 0;
     const touch: TouchDetails = this.paddle.touch(this.ball);
+    const touchObjectX: any = touch.left || touch.right;
+    const touchObjectY: any = touch.top || touch.bottom;
+    const isNum = (c: any): c is number => Number.isFinite(c);
 
-    if (touchCanvasX || touch.left || touch.right) {
+    if (touch.touch) {
+      logger.debug(touch);
+    }
+    if (touchCanvasX) {
       this.ball.reverseX();
     }
-    if (touchCanvasY || touch.top || touch.bottom) {
+    if (touchCanvasY) {
       this.ball.reverseY();
+    }
+    if (touchObjectX && isNum(touchObjectX)) {
+      const fromLeft: boolean = Boolean(touch.left && ballPosition.dx === 1);
+      const fromRight: boolean = Boolean(touch.right && ballPosition.dx === -1);
+
+      if (fromLeft || fromRight) {
+        this.ball.correctX(touchObjectX);
+        this.ball.reverseX();
+      }
+    }
+    if (touchObjectY && isNum(touchObjectY)) {
+      const fromTop: boolean = Boolean(touch.top && ballPosition.dy === 1);
+      const fromBottom: boolean = Boolean(touch.bottom && ballPosition.dy === -1);
+
+      if (fromTop || fromBottom) {
+        this.ball.correctY(touchObjectY);
+        this.ball.reverseY();
+      }
     }
   }
 
