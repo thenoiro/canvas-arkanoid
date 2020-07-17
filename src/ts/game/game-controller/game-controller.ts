@@ -75,8 +75,15 @@ export default class GameController implements GameControllerInterface {
   private update(): void {
     this.clear();
     const ballPosition: BallPositionDetails = this.ball.getPosition();
+    const outOfAreaX: boolean = ballPosition.x2 < 0 || ballPosition.x1 > this.width;
+    const outOfAreaY: boolean = ballPosition.y2 < 0 || ballPosition.y1 > this.height;
+
+    if (outOfAreaX || outOfAreaY) {
+      this.gameOver();
+      return;
+    }
     const touchCanvasX: boolean = ballPosition.x2 > this.width || ballPosition.x1 < 0;
-    const touchCanvasY: boolean = ballPosition.y1 < 0 || ballPosition.y2 > this.height;
+    const touchCanvasY: boolean = ballPosition.y1 < 0;
     const touch: TouchDetails = this.paddle.touch(this.ball);
 
     if (touchCanvasX || touch.left || touch.right) {
@@ -89,5 +96,21 @@ export default class GameController implements GameControllerInterface {
 
   private clear(): void {
     this.ctx.clearRect(0, 0, this.width, this.height);
+  }
+
+  private gameOver(): void {
+    this.loop.stop();
+    this.clear();
+    this.ctx.font = '48px monospace';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Game over', this.width / 2, this.height / 2);
+  }
+
+  public destroy(): void {
+    this.stop();
+    this.clear();
+    this.paddle.destroy();
+    this.ball.destroy();
+    this.loop.destroy();
   }
 }

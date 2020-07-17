@@ -13,7 +13,12 @@
   cursor: pointer;
   color: #444;
 }
-.game-container button:hover {
+.game-container button[disabled] {
+  pointer-events: all;
+  cursor: not-allowed;
+  color: #aaa;
+}
+.game-container button:not([disabled]):hover {
   background-color: #bbb;
 }
 .game-container .canvas-container .game-canvas {

@@ -9,7 +9,10 @@ export interface GameLoopInterface {
   stop: () => void;
   listen: (cb: LoopCallback) => void;
   getState: () => boolean;
+  destroy: () => void;
 }
+
+let instance: GameLoopInterface|null = null;
 
 class GameLoopClass implements GameLoopInterface {
   private callbacks: LoopCallback[] = [];
@@ -53,8 +56,12 @@ class GameLoopClass implements GameLoopInterface {
   public getState(): boolean {
     return this.started;
   }
+
+  public destroy(): void {
+    this.callbacks = [];
+    instance = null;
+  }
 }
-let instance: GameLoopInterface|null = null;
 
 export const GameLoop = (cb?: LoopCallback): GameLoopInterface => {
   if (!instance) {

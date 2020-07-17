@@ -9,6 +9,7 @@ import { TouchDetails, TouchDetailsObject } from './touch-details';
 export interface GameObjectInterface {
   getPosition: () => GameObjectPositionDetails;
   touch: (o: GameObjectInterface) => TouchDetails;
+  destroy: () => void;
 }
 
 interface GameObjectOptions {
@@ -97,5 +98,9 @@ export class GameObject implements GameObjectInterface {
       return new TouchDetailsObject();
     }
     return touchDetails;
+  }
+
+  public destroy(): void {
+    delete this.position;
   }
 }
