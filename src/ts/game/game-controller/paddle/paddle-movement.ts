@@ -16,9 +16,9 @@ export interface PaddleMovementInterface {
 }
 
 export class PaddleMovement implements PaddleMovementInterface {
-  private speed: number = config.game.speed;
+  private speed: number = config.game.paddle.speed;
 
-  private acceleration: number = config.game.acceleration;
+  private acceleration: number = config.game.paddle.acceleration;
 
   private s: number = 0;
 

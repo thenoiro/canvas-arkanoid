@@ -4,6 +4,8 @@ export interface CanvasConfig {
 }
 
 export interface PaddleConfig {
+  readonly speed: number;
+  readonly acceleration: number;
   readonly width: number;
   readonly height: number;
   readonly color: string;
@@ -16,8 +18,6 @@ export interface BallConfig {
 }
 
 export interface GameConfig {
-  readonly speed: number;
-  readonly acceleration: number;
   readonly canvas: CanvasConfig;
   readonly paddle: PaddleConfig;
   readonly ball: BallConfig;
@@ -31,20 +31,20 @@ export interface Config {
 export const config: Config = {
   debug: false,
   game: {
-    speed: 350,
-    acceleration: 0.025,
     canvas: {
       width: 800,
       height: 600,
     },
     paddle: {
+      speed: 350,
+      acceleration: 0.025,
       width: 150,
       height: 20,
       color: '#306',
     },
     ball: {
       size: 5,
-      speed: 10,
+      speed: 200,
       color: 'red',
     },
   },

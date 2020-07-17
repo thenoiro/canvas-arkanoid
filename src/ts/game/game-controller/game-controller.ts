@@ -2,6 +2,7 @@ import { config } from '../../config';
 import { Paddle, PaddleInterface } from './paddle/paddle';
 import { GameLoop, GameLoopInterface } from './game-loop';
 import { Ball, BallInterface } from './ball/ball';
+import { BallPositionDetails } from './ball/ball-position';
 
 interface GameControllerInterface {
   init: () => void;
@@ -72,6 +73,14 @@ export default class GameController implements GameControllerInterface {
 
   private update(): void {
     this.clear();
+    const ballPosition: BallPositionDetails = this.ball.getPosition();
+
+    if (ballPosition.x2 > this.width || ballPosition.x1 < 0) {
+      this.ball.reverseX();
+    }
+    if (ballPosition.y1 < 0 || ballPosition.y2 > this.height) {
+      this.ball.reverseY();
+    }
   }
 
   private clear(): void {
