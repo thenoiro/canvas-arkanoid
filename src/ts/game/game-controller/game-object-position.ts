@@ -1,3 +1,8 @@
+export interface Coord {
+  x: number;
+  y: number;
+}
+
 export interface GameObjectPositionDetails {
   readonly x: number;
   readonly y: number;
@@ -7,6 +12,15 @@ export interface GameObjectPositionDetails {
   readonly y2: number;
   readonly width: number;
   readonly height: number;
+  readonly c: Coord
+  readonly c1: Coord;
+  readonly c2: Coord;
+  readonly c3: Coord;
+  readonly c4: Coord;
+  readonly top: Coord;
+  readonly bottom: Coord;
+  readonly left: Coord;
+  readonly right: Coord;
 }
 
 export interface GameObjectPositionInterface {
@@ -63,6 +77,42 @@ export class GameObjectPosition implements GameObjectPositionInterface {
       y2: this.y2,
       width: this.width,
       height: this.height,
+      c: {
+        x: this.x,
+        y: this.y,
+      },
+      c1: {
+        x: this.x1,
+        y: this.y1,
+      },
+      c2: {
+        x: this.x2,
+        y: this.y1,
+      },
+      c3: {
+        x: this.x1,
+        y: this.y2,
+      },
+      c4: {
+        x: this.x2,
+        y: this.y2,
+      },
+      top: {
+        x: this.x,
+        y: this.y1,
+      },
+      bottom: {
+        x: this.x,
+        y: this.y2,
+      },
+      left: {
+        x: this.x1,
+        y: this.y,
+      },
+      right: {
+        x: this.x2,
+        y: this.y,
+      },
     };
   }
 

@@ -3,7 +3,7 @@ import { Paddle, PaddleInterface } from './paddle/paddle';
 import { GameLoop, GameLoopInterface } from './game-loop';
 import { Ball, BallInterface } from './ball/ball';
 import { BallPositionDetails } from './ball/ball-position';
-import { PaddlePositionDetails } from './paddle/paddle-position';
+import { TouchDetails } from './touch-details';
 
 interface GameControllerInterface {
   init: () => void;
@@ -75,35 +75,14 @@ export default class GameController implements GameControllerInterface {
   private update(): void {
     this.clear();
     const ballPosition: BallPositionDetails = this.ball.getPosition();
-    const paddlePosition: PaddlePositionDetails = this.paddle.getPosition();
-
     const touchCanvasX: boolean = ballPosition.x2 > this.width || ballPosition.x1 < 0;
     const touchCanvasY: boolean = ballPosition.y1 < 0 || ballPosition.y2 > this.height;
-    const withinPaddleX: boolean = ballPosition.x < paddlePosition.x2
-      && ballPosition.x > paddlePosition.x1;
+    const touch: TouchDetails = this.paddle.touch(this.ball);
 
-    const withinPaddleY: boolean = ballPosition.y > paddlePosition.y1
-      && ballPosition.y < paddlePosition.y2;
-
-    const abovePaddle: boolean = ballPosition.y < paddlePosition.y1;
-    const underPaddle: boolean = ballPosition.y > paddlePosition.y2;
-    const onTheLeft: boolean = ballPosition.x < paddlePosition.x1;
-    const onTheRight: boolean = ballPosition.x > paddlePosition.x2;
-    const touchPaddleTop: boolean = withinPaddleX && !abovePaddle && !underPaddle
-      && ballPosition.y2 > paddlePosition.y1;
-
-    const touchPaddleLeft: boolean = withinPaddleY && !abovePaddle && !underPaddle
-      && onTheLeft && ballPosition.x2 > paddlePosition.x1;
-
-    const touchPaddleRight: boolean = withinPaddleY && !abovePaddle && !underPaddle
-      && onTheRight && ballPosition.x1 < paddlePosition.x2;
-
-    const touchPaddleSide: boolean = touchPaddleLeft || touchPaddleRight;
-
-    if (touchCanvasX || touchPaddleSide) {
+    if (touchCanvasX || touch.left || touch.right) {
       this.ball.reverseX();
     }
-    if (touchCanvasY || touchPaddleTop) {
+    if (touchCanvasY || touch.top || touch.bottom) {
       this.ball.reverseY();
     }
   }
