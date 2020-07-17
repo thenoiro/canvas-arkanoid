@@ -102,7 +102,7 @@ export default class GameController implements GameControllerInterface {
       const fromRight: boolean = Boolean(touch.right && ballPosition.dx === -1);
 
       if (fromLeft || fromRight) {
-        this.ball.correctX(touchObjectX);
+        this.ball.correctY(touchObjectX);
         this.ball.reverseX();
       }
     }
@@ -111,7 +111,7 @@ export default class GameController implements GameControllerInterface {
       const fromBottom: boolean = Boolean(touch.bottom && ballPosition.dy === -1);
 
       if (fromTop || fromBottom) {
-        this.ball.correctY(touchObjectY);
+        this.ball.correctX(touchObjectY);
         this.ball.reverseY();
       }
     }

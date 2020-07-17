@@ -48,20 +48,18 @@ export class BallMovement implements BallMovementInterface {
   }
 
   public correctX(c: number): void {
-    const xDir: Direction = this.rx < 0 ? -1 : 1;
-    const yDir: Direction = this.ry < 0 ? -1 : 1;
-    const rx = (Math.abs(this.rx) + c) / 2;
-    const ry = 1 - rx;
-    this.rx = xDir === -1 ? 0 - rx : rx;
-    this.ry = yDir === -1 ? 0 - ry : ry;
+    const full: number = c + this.rx;
+    const newRx = (full + this.rx) / 2;
+    const newRy = 1 - Math.abs(newRx);
+    this.rx = newRx;
+    this.ry = this.ry > 0 ? newRy : 0 - newRy;
   }
 
   public correctY(c: number): void {
-    const xDir: Direction = this.rx < 0 ? -1 : 1;
-    const yDir: Direction = this.ry < 0 ? -1 : 1;
-    const ry = (Math.abs(this.ry) + c) / 2;
-    const rx = 1 - ry;
-    this.rx = xDir === -1 ? 0 - rx : rx;
-    this.ry = yDir === -1 ? 0 - ry : ry;
+    const full: number = c + this.ry;
+    const newRy = (full + this.ry) / 2;
+    const newRx = 1 - Math.abs(newRy);
+    this.ry = newRy;
+    this.rx = this.rx > 0 ? newRx : 0 - newRx;
   }
 }
