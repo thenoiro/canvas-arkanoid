@@ -1,6 +1,7 @@
 import { config, BrickConfig, BrickType } from '../../../config';
 import { GameObjectInterface, GameObject } from '../game-object';
 import { BrickPosition, BrickPositionDetails } from './brick-position';
+import { TouchDetails, TouchDetailsObject } from '../touch-details';
 
 export interface BrickInterface extends GameObjectInterface {
   init: () => void;
@@ -59,9 +60,13 @@ export class Brick extends GameObject implements BrickInterface {
   }
 
   private render(): void {
-    const pos: BrickPositionDetails = this.getPosition();
     const isNum = (n: any): n is number => Number.isFinite(n);
     const lineWidth: number = isNum(this.power) ? this.power : 0;
+
+    if (this.power === 0) {
+      return;
+    }
+    const pos: BrickPositionDetails = this.getPosition();
     this.ctx.fillStyle = this.border;
     this.ctx.fillRect(pos.x1, pos.y1, pos.width, pos.height);
     this.ctx.fillStyle = this.color;
@@ -73,7 +78,31 @@ export class Brick extends GameObject implements BrickInterface {
     );
   }
 
+  private hit() {
+    const isNum = (c: any): c is number => Number.isFinite(c);
+
+    if (isNum(this.power)) {
+      this.power -= 1;
+
+      if (this.power < 0) {
+        this.power = 0;
+      }
+    }
+  }
+
   public update(): void {
     this.render();
+  }
+
+  public touch(o: GameObjectInterface): TouchDetails {
+    if (this.power === 0) {
+      return new TouchDetailsObject();
+    }
+    const touchDetails: TouchDetails = super.touch(o);
+
+    if (touchDetails.touch) {
+      this.hit();
+    }
+    return touchDetails;
   }
 }

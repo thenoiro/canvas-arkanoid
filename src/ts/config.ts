@@ -63,7 +63,7 @@ export const config: Config = {
     },
     ball: {
       size: 5,
-      speed: 300,
+      speed: 250,
       color: 'red',
     },
     bricks: {

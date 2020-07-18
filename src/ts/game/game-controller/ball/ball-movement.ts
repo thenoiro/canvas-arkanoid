@@ -22,9 +22,9 @@ interface MovementOptions {
 export class BallMovement implements BallMovementInterface {
   private speed: number = config.game.ball.speed;
 
-  private rx: number = 0.5;
+  private rx: number = 0.3;
 
-  private ry: number = 0.5;
+  private ry: number = 0.7;
 
   public calculateMove(options: MovementOptions): MovementDetails {
     const { delta: d } = options;
@@ -37,6 +37,17 @@ export class BallMovement implements BallMovementInterface {
       x: sx,
       y: sy,
     };
+  }
+
+  private normalizeX(): void {
+    const lim = 0.7;
+
+    if (Math.abs(this.rx) > lim) {
+      const rx = lim;
+      const ry = 1 - rx;
+      this.rx = this.rx < 0 ? 0 - rx : rx;
+      this.ry = this.ry < 0 ? 0 - ry : ry;
+    }
   }
 
   public reverseX(): void {
@@ -53,6 +64,7 @@ export class BallMovement implements BallMovementInterface {
     const newRy = 1 - Math.abs(newRx);
     this.rx = newRx;
     this.ry = this.ry > 0 ? newRy : 0 - newRy;
+    this.normalizeX();
   }
 
   public correctY(c: number): void {
@@ -61,5 +73,6 @@ export class BallMovement implements BallMovementInterface {
     const newRx = 1 - Math.abs(newRy);
     this.ry = newRy;
     this.rx = this.rx > 0 ? newRx : 0 - newRx;
+    this.normalizeX();
   }
 }

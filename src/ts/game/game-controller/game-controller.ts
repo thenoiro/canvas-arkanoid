@@ -2,11 +2,12 @@ import { config } from '../../config';
 import { Paddle, PaddleInterface } from './paddle/paddle';
 import { GameLoop, GameLoopInterface } from './game-loop';
 import { Ball, BallInterface } from './ball/ball';
-import { BallPositionDetails } from './ball/ball-position';
+import { BallPositionDetails, BallPosition } from './ball/ball-position';
 import { TouchDetails } from './touch-details';
 import logger from '../../logger/logger';
 import { LevelConstructor, LevelConstructorInterface } from './level-constructor';
 import { BrickInterface } from './brick/brick';
+import { GameObjectInterface } from './game-object';
 
 interface GameControllerInterface {
   init: () => void;
@@ -87,32 +88,48 @@ export default class GameController implements GameControllerInterface {
     this.clear();
     this.bricks.forEach((o: BrickInterface) => o.update());
     const ballPosition: BallPositionDetails = this.ball.getPosition();
-    const outOfAreaX: boolean = ballPosition.x2 < 0 || ballPosition.x1 > this.width;
-    const outOfAreaY: boolean = ballPosition.y2 < 0 || ballPosition.y1 > this.height;
+    const outOfAreaX: boolean = ballPosition.x2 <= 0 || ballPosition.x1 >= this.width;
+    const outOfAreaY: boolean = ballPosition.y2 <= 0;
 
     if (outOfAreaX || outOfAreaY) {
       this.gameOver();
       return;
     }
-    const touchCanvasX: boolean = ballPosition.x2 > this.width || ballPosition.x1 < 0;
-    const touchCanvasY: boolean = ballPosition.y1 < 0;
-    const touch: TouchDetails = this.paddle.touch(this.ball);
-    const touchObjectX: any = touch.left || touch.right;
-    const touchObjectY: any = touch.top || touch.bottom;
-    const isNum = (c: any): c is number => Number.isFinite(c);
+    const touchCanvasX: boolean = ballPosition.x2 >= this.width || ballPosition.x1 <= 0;
+    const touchCanvasY: boolean = ballPosition.y1 <= 0 || ballPosition.y2 >= this.height;
 
-    if (touch.touch) {
-      logger.debug(touch);
-    }
     if (touchCanvasX) {
       this.ball.reverseX();
     }
     if (touchCanvasY) {
       this.ball.reverseY();
     }
+    if (touchCanvasX || touchCanvasY) {
+      return;
+    }
+    const paddleTouch: boolean = this.checkBallTouch(this.paddle);
+
+    if (!paddleTouch) {
+      this.bricks.some((b: BrickInterface) => {
+        const brickTouch: boolean = this.checkBallTouch(b);
+        return brickTouch;
+      });
+    }
+  }
+
+  checkBallTouch(gameObject: GameObjectInterface): boolean {
+    const ballPosition: BallPositionDetails = this.ball.getPosition();
+    const touchDetails: TouchDetails = gameObject.touch(this.ball);
+    const touchObjectX: any = touchDetails.left || touchDetails.right;
+    const touchObjectY: any = touchDetails.top || touchDetails.bottom;
+    const isNum = (c: any): c is number => Number.isFinite(c);
+
+    if (touchDetails.touch) {
+      logger.debug(touchDetails);
+    }
     if (touchObjectX && isNum(touchObjectX)) {
-      const fromLeft: boolean = Boolean(touch.left && ballPosition.dx === 1);
-      const fromRight: boolean = Boolean(touch.right && ballPosition.dx === -1);
+      const fromLeft: boolean = Boolean(touchDetails.left && ballPosition.dx === 1);
+      const fromRight: boolean = Boolean(touchDetails.right && ballPosition.dx === -1);
 
       if (fromLeft || fromRight) {
         this.ball.correctY(touchObjectX);
@@ -120,14 +137,15 @@ export default class GameController implements GameControllerInterface {
       }
     }
     if (touchObjectY && isNum(touchObjectY)) {
-      const fromTop: boolean = Boolean(touch.top && ballPosition.dy === 1);
-      const fromBottom: boolean = Boolean(touch.bottom && ballPosition.dy === -1);
+      const fromTop: boolean = Boolean(touchDetails.top && ballPosition.dy === 1);
+      const fromBottom: boolean = Boolean(touchDetails.bottom && ballPosition.dy === -1);
 
       if (fromTop || fromBottom) {
         this.ball.correctX(touchObjectY);
         this.ball.reverseY();
       }
     }
+    return touchDetails.touch;
   }
 
   private clear(): void {
