@@ -30,7 +30,7 @@ export class Ball extends GameObject implements BallInterface {
       position: new BallPosition({
         size: config.game.ball.size,
         x: config.game.canvas.width / 2,
-        y: 50,
+        y: 200,
       }),
     });
     const context = options.canvas.getContext('2d');
@@ -59,7 +59,6 @@ export class Ball extends GameObject implements BallInterface {
   }
 
   private move(delta: DeltaTime): void {
-    // const pos: BallPositionDetails = this.getPosition();
     const offset: MovementDetails = this.movement.calculateMove({ delta });
     this.position.moveX(offset.x);
     this.position.moveY(offset.y);

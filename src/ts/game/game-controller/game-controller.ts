@@ -4,6 +4,9 @@ import { GameLoop, GameLoopInterface } from './game-loop';
 import { Ball, BallInterface } from './ball/ball';
 import { BallPositionDetails } from './ball/ball-position';
 import { TouchDetails } from './touch-details';
+import logger from '../../logger/logger';
+import { LevelConstructor, LevelConstructorInterface } from './level-constructor';
+import { BrickInterface } from './brick/brick';
 
 interface GameControllerInterface {
   init: () => void;
@@ -29,6 +32,12 @@ export default class GameController implements GameControllerInterface {
 
   private loop: GameLoopInterface = GameLoop(() => this.update());
 
+  private l: number = 1;
+
+  private level: LevelConstructorInterface;
+
+  private bricks: BrickInterface[] = [];
+
   constructor(options: GameControllerOptions) {
     const { container } = options;
     const { width, height } = config.game.canvas;
@@ -46,12 +55,15 @@ export default class GameController implements GameControllerInterface {
     this.ctx = context;
     this.width = width;
     this.height = height;
+    this.level = new LevelConstructor({ canvas });
     this.paddle = new Paddle({ canvas });
     this.ball = new Ball({ canvas });
   }
 
   public init(): void {
     this.render();
+    this.bricks = this.level.buildLevel(this.l);
+    this.bricks.forEach((b: BrickInterface) => b.init());
     this.paddle.init();
     this.ball.init();
   }
@@ -73,6 +85,7 @@ export default class GameController implements GameControllerInterface {
 
   private update(): void {
     this.clear();
+    this.bricks.forEach((o: BrickInterface) => o.update());
     const ballPosition: BallPositionDetails = this.ball.getPosition();
     const outOfAreaX: boolean = ballPosition.x2 < 0 || ballPosition.x1 > this.width;
     const outOfAreaY: boolean = ballPosition.y2 < 0 || ballPosition.y1 > this.height;
